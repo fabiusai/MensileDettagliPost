@@ -42,7 +42,7 @@
         h1 {
             text-align: center;
             color: var(--color-secondary);
-            font-size: 3.0em; /* Molto più grande */
+            font-size: 3.0em; /* Molto piÃ¹ grande */
             margin-bottom: 30px;
             font-weight: normal; /* Non in grassetto */
         }
@@ -117,7 +117,7 @@
         }
 
         .file-input-label:hover {
-            background-color: #F8D144; /* Giallo più scuro */
+            background-color: #F8D144; /* Giallo piÃ¹ scuro */
             transform: translateY(-1px);
         }
 
@@ -216,7 +216,7 @@
         }
 
         .btn:hover {
-            background-color: #083A70; /* Blu più scuro */
+            background-color: #083A70; /* Blu piÃ¹ scuro */
             transform: translateY(-1px);
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
         }
@@ -290,7 +290,7 @@
                 padding: 20px;
             }
             h1 {
-                font-size: 2.2em; /* Adatta la dimensione per schermi più piccoli */
+                font-size: 2.2em; /* Adatta la dimensione per schermi piÃ¹ piccoli */
             }
             .file-input-label {
                 padding: 10px 20px;
@@ -372,7 +372,7 @@
             <div class="section section-full">
                 <h2>Anteprima SVG</h2>
                 <div id="svgPreviewContainer">
-                    <p>Anteprima del SVG generato apparirà qui.</p>
+                    <p>Anteprima del SVG generato apparirÃ  qui.</p>
                 </div>
             </div>
         </div>
@@ -459,7 +459,7 @@
             selectedRowIndex = -1;
             previewSvgBtn.disabled = true;
             downloadSvgBtn.disabled = true;
-            svgPreviewContainer.innerHTML = '<p>Anteprima del SVG generato apparirà qui.</p>';
+            svgPreviewContainer.innerHTML = '<p>Anteprima del SVG generato apparirÃ  qui.</p>';
             downloadMessage.style.display = 'none';
             document.querySelectorAll('tr.selected').forEach(row => row.classList.remove('selected'));
             document.querySelectorAll('input[name="selectRow"]').forEach(radio => radio.checked = false);
@@ -523,66 +523,93 @@
             const visualizzazioni = formatNumber(getCol('Visualizzazioni'));
             const interazioni = formatNumber(getCol('Interazioni'));
 
-            // Truncate copyText with improved logic for dynamic line breaks
+            // Improved text truncation logic with better word handling
             const words = copyText.split(' ');
             const lines = [];
             let currentLine = '';
-            const maxCharsPerLine = 75; // Increased for wider text block
+            const maxCharsPerLine = 70; 
+            const maxLines = 3; 
 
             for (let i = 0; i < words.length; i++) {
-                if ((currentLine + ' ' + words[i]).length <= maxCharsPerLine) {
-                    currentLine += (currentLine ? ' ' : '') + words[i];
+                const word = words[i];
+                const testLine = currentLine ? currentLine + ' ' + word : word;
+                
+                if (testLine.length <= maxCharsPerLine) {
+                    currentLine = testLine;
                 } else {
-                    lines.push(currentLine);
-                    currentLine = words[i];
+                    if (currentLine) {
+                        lines.push(currentLine);
+                        currentLine = word;
+                    } else {
+                        // Single word too long - force break
+                        lines.push(word);
+                        currentLine = '';
+                    }
+                }
+                
+                // Stop if we've reached max lines
+                if (lines.length >= maxLines) {
+                    break;
                 }
             }
-            if (currentLine) {
+            
+            if (currentLine && lines.length < maxLines) {
                 lines.push(currentLine);
             }
 
-            // Limit to 4 lines, add ellipsis if more
-            let displayedCopyLines = lines.slice(0, 4);
-            if (lines.length > 4) {
-                let lastLine = displayedCopyLines[3];
-                // Ensure ellipsis fits within the last line
-                if (lastLine.length > maxCharsPerLine - 5) { // Leave space for " (...)"
-                    lastLine = lastLine.substring(0, maxCharsPerLine - 8);
+            // Aggiungi puntini di sospensione se il testo è stato troncato
+            let displayedCopyLines = [...lines];
+            if (words.join(' ').length > displayedCopyLines.join(' ').length) { 
+                let lastLine = displayedCopyLines[maxLines - 1] || '';
+                const ellipsis = ' (...)';
+                
+                while (lastLine.length + ellipsis.length > maxCharsPerLine && lastLine.includes(' ')) {
+                    const lastSpaceIndex = lastLine.lastIndexOf(' ');
+                    lastLine = lastLine.substring(0, lastSpaceIndex);
                 }
-                displayedCopyLines[3] = lastLine.trim() + ' (...)';
+                
+                displayedCopyLines[maxLines - 1] = lastLine + ellipsis;
             }
             
             const copyTSpan = displayedCopyLines.map((line, index) => 
-                `<tspan x="30" dy="${index === 0 ? 0 : 32}">${line}</tspan>` 
+                `<tspan x="30" dy="${index === 0 ? 0 : 36}">${line}</tspan>` 
             ).join('');
 
-            // SVG base structure based on the provided image dimensions and layout
+            // Posizioni Y originali del blocco statistiche (come da tua richiesta)
+            const yStatsBlock = 415; // Riportato al valore originale
+
+            // Nuova posizione Y per il blocco Copy, più in basso rispetto alla data
+            // yDataPubblicazione è 190. Aggiungiamo un margine per il blocco copy
+            const yArgomento = 125;          
+            const yDataPubblicazione = 190;  
+            const yCopyText = 260; // Spostato più in basso per distanziarlo da yDataPubblicazione e avvicinarlo a yStatsBlock
+
+            // SVG base structure with improved layout
             return `
 <svg width="868" height="441" viewBox="0 0 868 441" fill="none" xmlns="http://www.w3.org/2000/svg">
     <rect width="868" height="441" fill="transparent"/> <!-- Sfondo trasparente -->
 
     <!-- Sezione superiore (azzurro chiaro) -->
     <rect x="0" y="0" width="868" height="77" fill="#E1E9F6"/>
-    <text x="434" y="47" font-family="Arial, sans-serif" font-size="40" font-weight="normal" fill="#0A4BB8" text-anchor="middle" alignment-baseline="middle">${label}</text> <!-- Font size increased to 40, font-weight to normal -->
+    <text x="434" y="47" font-family="Arial, sans-serif" font-size="40" font-weight="normal" fill="#0A4BB8" text-anchor="middle" alignment-baseline="middle">${label}</text>
 
-    <!-- Notizie dal territorio - Argomento (font più piccolo) -->
-    <text x="30" y="115" font-family="Arial, sans-serif" font-size="30" font-weight="bold" fill="#0A4BB8">${argomento}</text> <!-- Font size reduced to 30 -->
+    <!-- Notizie dal territorio - Argomento -->
+    <text x="30" y="${yArgomento}" font-family="Arial, sans-serif" font-size="30" font-weight="bold" fill="#0A4BB8">${argomento}</text>
 
     <!-- Pubblicato il Data -->
-    <text x="140" y="178" font-family="Arial, sans-serif" font-size="22" fill="#666666">Pubblicato il ${dataPubblicazione}</text>
+    <text x="130" y="${yDataPubblicazione}" font-family="Arial, sans-serif" font-size="22" fill="#666666">Pubblicato il ${dataPubblicazione}</text>
 
-    <!-- Testo Copy (font più grande, larghezza adattata) -->
-    <text x="30" y="240" font-family="Arial, sans-serif" font-size="26" fill="#666666" width="808" > <!-- Width adjusted for better fit, x remains 30 -->
+    <!-- Testo Copy con font leggermente più grande e posizionato -->
+    <text x="30" y="${yCopyText}" font-family="Arial, sans-serif" font-size="28" fill="#666666" width="808" >
         ${copyTSpan}
     </text>
 
-    <!-- Visualizzazioni -->
-    <text x="30" y="415" font-family="Arial, sans-serif" font-size="32" fill="#0A4BB8" font-weight="bold">Visualizzazioni: </text>
-    <text x="260" y="415" font-family="Arial, sans-serif" font-size="32" fill="#666666" font-weight="normal">${visualizzazioni}</text>
+    <!-- Blocco Visualizzazioni e Interazioni (posizione originale) -->
+    <text x="30" y="${yStatsBlock}" font-family="Arial, sans-serif" font-size="32" fill="#0A4BB8" font-weight="bold">Visualizzazioni:</text>
+    <text x="270" y="${yStatsBlock}" font-family="Arial, sans-serif" font-size="32" fill="#666666" font-weight="normal">${visualizzazioni}</text>
 
-    <!-- Interazioni -->
-    <text x="400" y="415" font-family="Arial, sans-serif" font-size="32" fill="#0A4BB8" font-weight="bold">Interazioni: </text>
-    <text x="600" y="415" font-family="Arial, sans-serif" font-size="32" fill="#666666" font-weight="normal">${interazioni}</text>
+    <text x="410" y="${yStatsBlock}" font-family="Arial, sans-serif" font-size="32" fill="#0A4BB8" font-weight="bold">Interazioni:</text>
+    <text x="610" y="${yStatsBlock}" font-family="Arial, sans-serif" font-size="32" fill="#666666" font-weight="normal">${interazioni}</text>
 </svg>
             `;
         }
