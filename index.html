@@ -8,340 +8,467 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
     <style>
         :root {
-            --color-primary: #FFCC00; /* Giallo */
-            --color-secondary: #0A4BB8; /* Blu (aggiornato) */
-            --color-text-dark: #333;
-            --color-text-light: #666;
-            --color-bg-light: #F0F4F8;
-            --color-border: #DDE7F0;
+            --color-primary: #FFCC00;
+            --color-secondary: #003d82;
+            --color-accent: #0066cc;
+            --color-text-primary: #1a1a1a;
+            --color-text-secondary: #666666;
+            --color-text-muted: #999999;
+            --color-bg-primary: #ffffff;
+            --color-bg-secondary: #f8f9fa;
+            --color-bg-light: #fafbfc;
+            --color-border: #e1e5e9;
+            --color-border-light: #f0f2f4;
             --color-success: #28a745;
+            --color-hover: #fff5cc;
+            --border-radius: 8px;
+            --box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+            --box-shadow-hover: 0 4px 20px rgba(0, 0, 0, 0.12);
+            --transition: all 0.2s ease;
         }
 
-        body {
-            font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background-color: var(--color-bg-light);
-            color: var(--color-text-dark);
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            min-height: 100vh;
-        }
-
-        .container {
-            background-color: #fff;
-            border-radius: 12px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-            padding: 30px 40px;
-            width: 100%;
-            max-width: 1200px;
+        * {
             box-sizing: border-box;
         }
 
-        h1 {
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Open Sans', 'Helvetica Neue', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, var(--color-bg-secondary) 0%, var(--color-bg-light) 100%);
+            color: var(--color-text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
             text-align: center;
-            color: var(--color-secondary);
-            font-size: 3.0em; /* Molto piÃ¹ grande */
-            margin-bottom: 30px;
-            font-weight: normal; /* Non in grassetto */
+            margin-bottom: 40px;
+            padding: 30px 0;
         }
 
-        .section-grid {
+        .header h1 {
+            font-size: 2.8rem;
+            font-weight: 300;
+            color: var(--color-secondary);
+            margin: 0;
+            letter-spacing: -0.02em;
+        }
+
+        .header .subtitle {
+            font-size: 1.1rem;
+            color: var(--color-text-secondary);
+            margin-top: 8px;
+            font-weight: 400;
+        }
+
+        .workflow-container {
             display: grid;
-            grid-template-columns: 1fr 2fr 1fr;
-            gap: 40px;
-            border-top: 1px solid var(--color-border);
-            padding-top: 30px;
-            margin-top: 30px;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 32px;
         }
 
-        .section {
-            background-color: #fff;
-            border-radius: 8px;
-            padding: 25px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-            border: 1px solid var(--color-border);
-            display: flex;
-            flex-direction: column;
+        .workflow-step {
+            background: var(--color-bg-primary);
+            border: 2px solid var(--color-border);
+            border-radius: var(--border-radius);
+            padding: 28px;
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
         }
 
-        .section-full {
-            grid-column: 1 / -1; /* Occupa tutte le colonne */
-            display: flex;
-            flex-direction: column;
+        .workflow-step::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-accent) 100%);
         }
 
-        h2 {
-            color: var(--color-secondary);
-            font-size: 1.4em;
-            margin-top: 0;
-            margin-bottom: 10px;
-            border-bottom: 2px solid var(--color-primary);
-            padding-bottom: 8px;
-            display: inline-block;
+        .workflow-step:hover {
+            border-color: var(--color-primary);
+            box-shadow: var(--box-shadow-hover);
+            transform: translateY(-2px);
         }
 
-        .section p {
-            font-size: 0.9em;
-            color: var(--color-text-light);
-            margin-bottom: 20px;
-        }
-
-        .input-group {
-            margin-bottom: 20px;
+        .step-header {
             display: flex;
             align-items: center;
+            margin-bottom: 16px;
         }
 
-        .file-input-wrapper {
-            position: relative;
-            display: inline-block;
-            flex-grow: 1;
-        }
-
-        .file-input-label {
-            background-color: var(--color-primary);
-            color: var(--color-text-dark);
-            padding: 12px 25px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 1em;
-            transition: background-color 0.2s ease, transform 0.1s ease;
-            display: inline-flex;
+        .step-number {
+            background: var(--color-primary);
+            color: var(--color-text-primary);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
             align-items: center;
             justify-content: center;
-            user-select: none;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-
-        .file-input-label:hover {
-            background-color: #F8D144; /* Giallo piÃ¹ scuro */
-            transform: translateY(-1px);
-        }
-
-        .file-input-label:active {
-            transform: translateY(0);
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        }
-
-        #excelFile {
-            display: none;
-        }
-
-        #fileName {
-            margin-left: 15px;
-            font-size: 0.9em;
-            color: var(--color-text-light);
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-right: 12px;
             flex-shrink: 0;
         }
 
-        .icon-link {
-            font-size: 1.2em;
-            color: var(--color-text-light);
-            margin-left: 10px;
-            display: inline-block;
+        .step-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--color-secondary);
+            margin: 0;
         }
 
-        table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
-            margin-top: 20px;
-            background-color: #fcfcfc;
-            border-radius: 8px;
+        .step-description {
+            color: var(--color-text-secondary);
+            font-size: 0.95rem;
+            margin: 0 0 24px 0;
+            line-height: 1.5;
+        }
+
+        .file-upload-area {
+            border: 2px dashed var(--color-border);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            text-align: center;
+            transition: var(--transition);
+            background: var(--color-bg-light);
+            margin-bottom: 16px;
+        }
+
+        .file-upload-area:hover {
+            border-color: var(--color-primary);
+            background: var(--color-hover);
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .file-upload-button {
+            background: var(--color-primary);
+            color: var(--color-text-primary);
+            border: none;
+            padding: 12px 24px;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .file-upload-button:hover {
+            background: #e6b800;
+            transform: translateY(-1px);
+        }
+
+        .file-upload-button:active {
+            transform: translateY(0);
+        }
+
+        .file-name {
+            margin-top: 12px;
+            font-size: 0.9rem;
+            color: var(--color-text-muted);
+        }
+
+        .file-name.has-file {
+            color: var(--color-success);
+            font-weight: 500;
+        }
+
+        .data-table-container {
+            background: var(--color-bg-primary);
+            border: 1px solid var(--color-border);
+            border-radius: var(--border-radius);
             overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+            max-height: 320px;
+            overflow-y: auto;
         }
 
-        th, td {
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        .data-table th {
+            background: var(--color-secondary);
+            color: white;
+            padding: 14px 12px;
             text-align: left;
-            padding: 12px 15px;
-            border-bottom: 1px solid var(--color-border);
-            font-size: 0.85em;
-        }
-
-        th {
-            background-color: var(--color-secondary);
-            color: #fff;
             font-weight: 600;
             position: sticky;
             top: 0;
+            z-index: 10;
         }
 
-        tr:last-child td {
-            border-bottom: none;
+        .data-table td {
+            padding: 12px;
+            border-bottom: 1px solid var(--color-border-light);
         }
 
-        tbody tr {
-            transition: background-color 0.2s ease;
+        .data-table tbody tr {
+            transition: var(--transition);
         }
 
-        tbody tr:hover {
-            background-color: #F8FCFF;
+        .data-table tbody tr:hover {
+            background: var(--color-bg-light);
         }
 
-        tbody tr.selected {
-            background-color: #E6F3FF; /* Blu chiaro */
-            font-weight: 500;
+        .data-table tbody tr.selected {
+            background: #e6f3ff;
             color: var(--color-secondary);
         }
 
-        .table-wrapper {
-            max-height: 300px;
-            overflow-y: auto;
-            border: 1px solid var(--color-border);
-            border-radius: 8px;
-            margin-bottom: 20px;
+        .data-table tbody tr:last-child td {
+            border-bottom: none;
         }
 
-        .btn {
-            background-color: var(--color-secondary);
-            color: #fff;
-            padding: 12px 25px;
+        .radio-input {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--color-primary);
+        }
+
+        .action-button {
+            background: var(--color-secondary);
+            color: white;
             border: none;
-            border-radius: 8px;
+            padding: 12px 24px;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            font-size: 0.95rem;
             cursor: pointer;
-            font-weight: bold;
-            font-size: 1em;
-            transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            user-select: none;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            margin-top: auto; /* Per allineare in basso nei flex containers */
-            width: fit-content;
-        }
-
-        .btn:hover {
-            background-color: #083A70; /* Blu piÃ¹ scuro */
-            transform: translateY(-1px);
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-        }
-
-        .btn:active {
-            transform: translateY(0);
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        }
-
-        .btn.btn-primary {
-            background-color: var(--color-primary);
-            color: var(--color-text-dark);
-        }
-
-        .btn.btn-primary:hover {
-            background-color: #F8D144;
-        }
-
-        .btn-message {
-            margin-left: 10px;
-            font-size: 0.9em;
-        }
-
-        #svgPreviewContainer {
-            margin-top: 20px;
-            border: 1px solid var(--color-border);
-            border-radius: 8px;
-            background-color: #F8FBFD;
-            padding: 15px;
-            overflow: hidden;
-            flex-grow: 1;
+            transition: var(--transition);
+            width: 100%;
             display: flex;
-            justify-content: center;
             align-items: center;
-            min-height: 200px;
-            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+            justify-content: center;
+            gap: 8px;
+            min-height: 48px;
         }
 
-        #svgPreviewContainer svg {
+        .action-button:hover:not(:disabled) {
+            background: #002a5c;
+            transform: translateY(-1px);
+        }
+
+        .action-button:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        .action-button:disabled {
+            background: var(--color-border);
+            color: var(--color-text-muted);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .action-button.success {
+            background: var(--color-success);
+        }
+
+        .action-button.loading {
+            background: var(--color-accent);
+            position: relative;
+        }
+
+        .loading-spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid transparent;
+            border-top: 2px solid currentColor;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .preview-section {
+            grid-column: 1 / -1;
+            background: var(--color-bg-primary);
+            border: 2px solid var(--color-border);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            overflow: hidden;
+        }
+
+        .preview-header {
+            background: var(--color-bg-secondary);
+            padding: 20px 28px;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .preview-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--color-secondary);
+            margin: 0;
+        }
+
+        .preview-content {
+            padding: 28px;
+            min-height: 280px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #fafbfc;
+        }
+
+        .preview-placeholder {
+            text-align: center;
+            color: var(--color-text-muted);
+            font-size: 1.1rem;
+        }
+
+        .preview-content svg {
             max-width: 100%;
             height: auto;
-            display: block;
+            border: 1px solid var(--color-border);
+            border-radius: var(--border-radius);
+            background: white;
         }
 
-        .message-box {
-            background-color: #e9f7ef;
-            color: var(--color-success);
+        .success-message {
+            background: #d4edda;
+            color: #155724;
             border: 1px solid #c3e6cb;
-            padding: 10px 15px;
-            border-radius: 6px;
-            margin-top: 15px;
-            font-size: 0.9em;
-            display: none; /* Hidden by default */
+            padding: 12px 16px;
+            border-radius: var(--border-radius);
+            margin-top: 16px;
+            font-size: 0.9rem;
+            display: none;
+            align-items: center;
+            gap: 8px;
         }
 
-        /* Responsive adjustments */
+        .success-message.show {
+            display: flex;
+        }
+
+        /* Responsive Design */
         @media (max-width: 1024px) {
-            .section-grid {
+            .workflow-container {
                 grid-template-columns: 1fr 1fr;
             }
-            .section:nth-child(3) { /* Download SVG section */
+            
+            .workflow-step:last-child {
                 grid-column: 1 / -1;
             }
         }
 
         @media (max-width: 768px) {
-            .section-grid {
-                grid-template-columns: 1fr;
+            .main-container {
+                padding: 16px;
             }
-            .container {
+
+            .header h1 {
+                font-size: 2.2rem;
+            }
+
+            .workflow-container {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .workflow-step {
                 padding: 20px;
             }
-            h1 {
-                font-size: 2.2em; /* Adatta la dimensione per schermi piÃ¹ piccoli */
+
+            .data-table-container {
+                max-height: 280px;
             }
-            .file-input-label {
-                padding: 10px 20px;
-                font-size: 0.9em;
+
+            .data-table th,
+            .data-table td {
+                padding: 10px 8px;
+                font-size: 0.85rem;
             }
-            #fileName {
-                font-size: 0.8em;
+
+            .action-button {
+                padding: 14px 20px;
             }
-            .btn {
-                padding: 10px 20px;
-                font-size: 0.9em;
-                width: 100%;
+        }
+
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.8rem;
             }
-            th, td {
-                padding: 10px;
-                font-size: 0.8em;
+
+            .step-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
             }
-            .table-wrapper {
-                max-height: 250px;
+
+            .step-number {
+                margin-right: 0;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Creatore Grafico Notizie</h1>
+    <div class="main-container">
+        <header class="header">
+            <h1>Creatore Grafico Notizie</h1>
+            <p class="subtitle">Strumento per la generazione automatica di grafiche SVG da dati Excel</p>
+        </header>
 
-        <div class="section-grid">
-            <div class="section">
-                <h2>1. Carica il file Excel</h2>
-                <p>Seleziona il tuo file .xlsx contenente i dati.</p>
-                <div class="input-group">
-                    <div class="file-input-wrapper">
-                        <input type="file" id="excelFile" accept=".xlsx" aria-label="Carica file Excel">
-                        <label for="excelFile" class="file-input-label">
-                            Carica File
-                            <span class="icon-link"></span>
-                        </label>
-                    </div>
-                    <span id="fileName">Nessun file selezionato.</span>
+        <div class="workflow-container">
+            <!-- Step 1: File Upload -->
+            <div class="workflow-step">
+                <div class="step-header">
+                    <div class="step-number">1</div>
+                    <h2 class="step-title">Carica Dati</h2>
+                </div>
+                <p class="step-description">
+                    Seleziona il file Excel (.xlsx) contenente i dati delle notizie da elaborare.
+                </p>
+                
+                <div class="file-upload-area">
+                    <input type="file" id="excelFile" class="file-input" accept=".xlsx" aria-label="Carica file Excel">
+                    <label for="excelFile" class="file-upload-button">
+                        <span>📁</span>
+                        Seleziona File Excel
+                    </label>
+                    <div id="fileName" class="file-name">Nessun file selezionato</div>
                 </div>
             </div>
 
-            <div class="section">
-                <h2>2. Seleziona riga e anteprima</h2>
-                <p>Scegli una riga dalla tabella per generare l'SVG.</p>
-                <div class="table-wrapper">
-                    <table id="dataTable">
+            <!-- Step 2: Data Selection -->
+            <div class="workflow-step">
+                <div class="step-header">
+                    <div class="step-number">2</div>
+                    <h2 class="step-title">Seleziona Dati</h2>
+                </div>
+                <p class="step-description">
+                    Scegli una riga dalla tabella per generare l'anteprima del grafico SVG.
+                </p>
+
+                <div class="data-table-container">
+                    <table id="dataTable" class="data-table">
                         <thead>
                             <tr>
-                                <th></th> <!-- Colonna per la selezione -->
+                                <th style="width: 40px;"></th>
                                 <th>Label</th>
                                 <th>Data</th>
                                 <th>Argomento</th>
@@ -351,28 +478,51 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <!-- Dati caricati qui -->
+                            <tr>
+                                <td colspan="7" style="text-align: center; color: var(--color-text-muted); padding: 40px;">
+                                    Carica un file Excel per visualizzare i dati
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
-                <button id="previewSvgBtn" class="btn" disabled>
-                    Visualizza Anteprima
+
+                <button id="previewSvgBtn" class="action-button" disabled>
+                    <span>👁️</span>
+                    <span class="button-text">Genera Anteprima</span>
                 </button>
             </div>
 
-            <div class="section">
-                <h2>3. Scarica l'SVG</h2>
-                <p>Genera e scarica il file SVG basato sulla riga selezionata.</p>
-                <button id="downloadSvgBtn" class="btn" disabled>
-                    Scarica SVG
+            <!-- Step 3: Download -->
+            <div class="workflow-step">
+                <div class="step-header">
+                    <div class="step-number">3</div>
+                    <h2 class="step-title">Scarica SVG</h2>
+                </div>
+                <p class="step-description">
+                    Genera e scarica il file SVG basato sui dati della riga selezionata.
+                </p>
+
+                <button id="downloadSvgBtn" class="action-button" disabled>
+                    <span>⬇️</span>
+                    <span class="button-text">Scarica SVG</span>
                 </button>
-                <div id="downloadMessage" class="message-box"></div>
+
+                <div id="downloadMessage" class="success-message">
+                    <span>✅</span>
+                    <span>File SVG scaricato con successo!</span>
+                </div>
             </div>
 
-            <div class="section section-full">
-                <h2>Anteprima SVG</h2>
-                <div id="svgPreviewContainer">
-                    <p>Anteprima del SVG generato apparirÃ  qui.</p>
+            <!-- Preview Section -->
+            <div class="preview-section">
+                <div class="preview-header">
+                    <h2 class="preview-title">Anteprima Grafico</h2>
+                </div>
+                <div class="preview-content" id="svgPreviewContainer">
+                    <div class="preview-placeholder">
+                        L'anteprima del grafico SVG generato apparirà qui dopo aver selezionato una riga e aver cliccato su "Genera Anteprima"
+                    </div>
                 </div>
             </div>
         </div>
@@ -394,6 +544,7 @@
             const file = event.target.files[0];
             if (file) {
                 fileNameSpan.textContent = file.name;
+                fileNameSpan.classList.add('has-file');
                 const reader = new FileReader();
                 reader.onload = (e) => {
                     const workbook = XLSX.read(e.target.result, { type: 'array' });
@@ -405,15 +556,16 @@
                 };
                 reader.readAsArrayBuffer(file);
             } else {
-                fileNameSpan.textContent = 'Nessun file selezionato.';
-                dataTableBody.innerHTML = '';
+                fileNameSpan.textContent = 'Nessun file selezionato';
+                fileNameSpan.classList.remove('has-file');
+                dataTableBody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: var(--color-text-muted); padding: 40px;">Carica un file Excel per visualizzare i dati</td></tr>';
                 resetSelection();
             }
         });
 
         function displayTable(excelData) {
             dataTableBody.innerHTML = '';
-            if (excelData.length < 2) return; // Need header and at least one data row
+            if (excelData.length < 2) return;
 
             const headers = excelData[0];
             const relevantHeaders = ["Label", "Data", "Argomento", "Copy", "Visualizzazioni", "Interazioni"];
@@ -424,20 +576,20 @@
                 const tr = document.createElement('tr');
                 tr.dataset.rowIndex = i;
 
-                // Add empty cell for selection
                 const selectTd = document.createElement('td');
-                selectTd.innerHTML = `<input type="radio" name="selectRow" value="${i}" aria-label="Seleziona riga ${i}">`;
+                selectTd.innerHTML = `<input type="radio" name="selectRow" value="${i}" class="radio-input" aria-label="Seleziona riga ${i}">`;
                 tr.appendChild(selectTd);
 
                 headerIndices.forEach(colIndex => {
                     const td = document.createElement('td');
-                    td.textContent = rowData[colIndex] || '';
+                    const cellValue = rowData[colIndex] || '';
+                    td.textContent = cellValue.toString().length > 30 ? cellValue.toString().substring(0, 30) + '...' : cellValue;
+                    td.title = cellValue;
                     tr.appendChild(td);
                 });
                 dataTableBody.appendChild(tr);
             }
 
-            // Add event listeners for row selection
             document.querySelectorAll('input[name="selectRow"]').forEach(radio => {
                 radio.addEventListener('change', (event) => {
                     if (event.target.checked) {
@@ -459,43 +611,65 @@
             selectedRowIndex = -1;
             previewSvgBtn.disabled = true;
             downloadSvgBtn.disabled = true;
-            svgPreviewContainer.innerHTML = '<p>Anteprima del SVG generato apparirÃ  qui.</p>';
-            downloadMessage.style.display = 'none';
+            svgPreviewContainer.innerHTML = '<div class="preview-placeholder">L\'anteprima del grafico SVG generato apparirà qui dopo aver selezionato una riga e aver cliccato su "Genera Anteprima"</div>';
+            downloadMessage.classList.remove('show');
             document.querySelectorAll('tr.selected').forEach(row => row.classList.remove('selected'));
             document.querySelectorAll('input[name="selectRow"]').forEach(radio => radio.checked = false);
         }
 
+        function setButtonState(button, state, text) {
+            const buttonText = button.querySelector('.button-text');
+            button.className = `action-button ${state}`;
+            
+            if (state === 'loading') {
+                buttonText.innerHTML = `<span class="loading-spinner"></span>${text}`;
+            } else {
+                buttonText.textContent = text;
+            }
+        }
+
         previewSvgBtn.addEventListener('click', () => {
             if (selectedRowIndex !== -1) {
-                const selectedRowData = data[selectedRowIndex];
-                const generatedSvg = generateSvg(selectedRowData, data[0]); // Pass headers too
-                svgPreviewContainer.innerHTML = generatedSvg;
-                previewSvgBtn.textContent = 'Visualizza Anteprima';
-                setTimeout(() => previewSvgBtn.textContent = 'Fatto!', 100);
+                setButtonState(previewSvgBtn, 'loading', 'Generazione in corso...');
+                
+                setTimeout(() => {
+                    const selectedRowData = data[selectedRowIndex];
+                    const generatedSvg = generateSvg(selectedRowData, data[0]);
+                    svgPreviewContainer.innerHTML = generatedSvg;
+                    
+                    setButtonState(previewSvgBtn, 'success', 'Anteprima Generata!');
+                    setTimeout(() => {
+                        setButtonState(previewSvgBtn, '', 'Genera Anteprima');
+                    }, 1500);
+                }, 500);
             }
         });
 
         downloadSvgBtn.addEventListener('click', () => {
             if (selectedRowIndex !== -1) {
-                const selectedRowData = data[selectedRowIndex];
-                const generatedSvg = generateSvg(selectedRowData, data[0]);
-                const blob = new Blob([generatedSvg], { type: 'image/svg+xml' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `notizia-${selectedRowIndex}.svg`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-
-                downloadSvgBtn.textContent = 'Download in corso...';
-                downloadMessage.textContent = 'File SVG scaricato con successo!';
-                downloadMessage.style.display = 'block';
+                setButtonState(downloadSvgBtn, 'loading', 'Download in corso...');
+                
                 setTimeout(() => {
-                    downloadSvgBtn.textContent = 'Scarica SVG';
-                    downloadMessage.style.display = 'none';
-                }, 2000);
+                    const selectedRowData = data[selectedRowIndex];
+                    const generatedSvg = generateSvg(selectedRowData, data[0]);
+                    const blob = new Blob([generatedSvg], { type: 'image/svg+xml' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `notizia-${selectedRowIndex}.svg`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+
+                    setButtonState(downloadSvgBtn, 'success', 'Download Completato!');
+                    downloadMessage.classList.add('show');
+                    
+                    setTimeout(() => {
+                        setButtonState(downloadSvgBtn, '', 'Scarica SVG');
+                        downloadMessage.classList.remove('show');
+                    }, 3000);
+                }, 800);
             }
         });
 
@@ -523,7 +697,6 @@
             const visualizzazioni = formatNumber(getCol('Visualizzazioni'));
             const interazioni = formatNumber(getCol('Interazioni'));
 
-            // Improved text truncation logic with better word handling
             const words = copyText.split(' ');
             const lines = [];
             let currentLine = '';
@@ -541,13 +714,11 @@
                         lines.push(currentLine);
                         currentLine = word;
                     } else {
-                        // Single word too long - force break
                         lines.push(word);
                         currentLine = '';
                     }
                 }
                 
-                // Stop if we've reached max lines
                 if (lines.length >= maxLines) {
                     break;
                 }
@@ -557,7 +728,6 @@
                 lines.push(currentLine);
             }
 
-            // Aggiungi puntini di sospensione se il testo è stato troncato
             let displayedCopyLines = [...lines];
             if (words.join(' ').length > displayedCopyLines.join(' ').length) { 
                 let lastLine = displayedCopyLines[maxLines - 1] || '';
@@ -575,39 +745,23 @@
                 `<tspan x="30" dy="${index === 0 ? 0 : 36}">${line}</tspan>` 
             ).join('');
 
-            // Posizioni Y originali del blocco statistiche (come da tua richiesta)
-            const yStatsBlock = 415; // Riportato al valore originale
-
-            // Nuova posizione Y per il blocco Copy, più in basso rispetto alla data
-            // yDataPubblicazione è 190. Aggiungiamo un margine per il blocco copy
+            const yStatsBlock = 415;
             const yArgomento = 125;          
             const yDataPubblicazione = 190;  
-            const yCopyText = 260; // Spostato più in basso per distanziarlo da yDataPubblicazione e avvicinarlo a yStatsBlock
+            const yCopyText = 260;
 
-            // SVG base structure with improved layout
             return `
 <svg width="868" height="441" viewBox="0 0 868 441" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <rect width="868" height="441" fill="transparent"/> <!-- Sfondo trasparente -->
-
-    <!-- Sezione superiore (azzurro chiaro) -->
+    <rect width="868" height="441" fill="transparent"/>
     <rect x="0" y="0" width="868" height="77" fill="#E1E9F6"/>
     <text x="434" y="47" font-family="Arial, sans-serif" font-size="40" font-weight="normal" fill="#0A4BB8" text-anchor="middle" alignment-baseline="middle">${label}</text>
-
-    <!-- Notizie dal territorio - Argomento -->
     <text x="30" y="${yArgomento}" font-family="Arial, sans-serif" font-size="30" font-weight="bold" fill="#0A4BB8">${argomento}</text>
-
-    <!-- Pubblicato il Data -->
     <text x="130" y="${yDataPubblicazione}" font-family="Arial, sans-serif" font-size="22" fill="#666666">Pubblicato il ${dataPubblicazione}</text>
-
-    <!-- Testo Copy con font leggermente più grande e posizionato -->
     <text x="30" y="${yCopyText}" font-family="Arial, sans-serif" font-size="28" fill="#666666" width="808" >
         ${copyTSpan}
     </text>
-
-    <!-- Blocco Visualizzazioni e Interazioni (posizione originale) -->
     <text x="30" y="${yStatsBlock}" font-family="Arial, sans-serif" font-size="32" fill="#0A4BB8" font-weight="bold">Visualizzazioni:</text>
     <text x="270" y="${yStatsBlock}" font-family="Arial, sans-serif" font-size="32" fill="#666666" font-weight="normal">${visualizzazioni}</text>
-
     <text x="410" y="${yStatsBlock}" font-family="Arial, sans-serif" font-size="32" fill="#0A4BB8" font-weight="bold">Interazioni:</text>
     <text x="610" y="${yStatsBlock}" font-family="Arial, sans-serif" font-size="32" fill="#666666" font-weight="normal">${interazioni}</text>
 </svg>
