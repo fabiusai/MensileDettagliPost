@@ -289,7 +289,7 @@ function generateSvg(rowData,headers){
     }
     if(currentLine && lines.length<maxLines){lines.push(currentLine);}
     const copyTSpan=lines.map((line,index)=>`<tspan x="30" dy="${index===0?0:30}">${line}</tspan>`).join('');
-    const yStatsBlock=415;const yArgomento=125;const yDataPubblicazione=206;const yCopyText=290;const yLabelTitle=55;
+    const yStatsBlock=415;const yArgomento=125;const yDataPubblicazione=226;const yCopyText=290;const yLabelTitle=55;
     return `
 <svg width="868" height="441" viewBox="0 0 868" fill="none" xmlns="http://www.w3.org/2000/svg">
     <rect width="868" height="441" fill="transparent"/>
