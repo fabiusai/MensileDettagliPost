@@ -1,3 +1,5 @@
+--- START OF FILE index.html ---
+
 <!DOCTYPE html>
 <html lang="it">
 <head>
@@ -289,12 +291,12 @@ function generateSvg(rowData,headers){
     const copyTSpan=lines.map((line,index)=>`<tspan x="30" dy="${index===0?0:30}">${line}</tspan>`).join('');
     const yStatsBlock=415;const yArgomento=125;const yDataPubblicazione=206;const yCopyText=290;const yLabelTitle=55;
     return `
-<svg width="868" height="441" viewBox="0 0 868 441" fill="none" xmlns="http://www.w3.org/2000/svg">
+<svg width="868" height="441" viewBox="0 0 868" fill="none" xmlns="http://www.w3.org/2000/svg">
     <rect width="868" height="441" fill="transparent"/>
     <rect x="0" y="0" width="868" height="77" fill="#E1E9F6"/>
     <text x="434" y="${yLabelTitle}" font-family="Arial, sans-serif" font-size="40" fill="#0A4BB8" text-anchor="middle" alignment-baseline="middle">${label}</text>
     <text x="30" y="${yArgomento}" font-family="Arial, sans-serif" font-size="30" font-weight="bold" fill="#0A4BB8">${argomento}</text>
-    <text x="130" y="${yDataPubblicazione}" font-family="Arial, sans-serif" font-size="24" fill="#666666">Pubblicato il ${dataPubblicazione}</text>
+    <text x="130" y="${yDataPubblicazione}" font-family="Arial, sans-serif" font-size="30" fill="#666666">Pubblicato il ${dataPubblicazione}</text>
     <text x="30" y="${yCopyText}" font-family="Arial, sans-serif" font-size="30" fill="#666666">${copyTSpan}</text>
     <text x="30" y="${yStatsBlock}" font-family="Arial, sans-serif" font-size="32" fill="#0A4BB8" font-weight="bold">Visualizzazioni:</text>
     <text x="270" y="${yStatsBlock}" font-family="Arial, sans-serif" font-size="32" fill="#666666">${visualizzazioni}</text>
